@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+import requests
+
+reddit = "https://www.reddit.com"
+base_url = "https://oauth.reddit.com"
+data = {
+    "grant_type": "password",
+    "username": "no",
+    "password": "no",
+}
+auth = requests.auth.HTTPBasicAuth(
+    "HjuN12sjBY2LPylvx6WgHQ", "Hy5nDpK47qxKkL2H7BjRqcqE8K7eTw"
+)
+post = requests.post(
+    "https://www.reddit.com/api/v1/access_token",
+    data=data,
+    headers={"User-Agent": "MyBot by saskoverwatch"},
+    auth=auth,
+)
+TOKEN = post.json()["access_token"]
+ReToken = "bearer " + TOKEN
+Reheaders = {"Authorization": ReToken, "User-Agent": "MyBot by saskoverwatch"}
+get1 = requests.get(base_url + "/api/v1/me", headers=Reheaders)
+
+aj = requests.get(
+    "https://oauth.reddit.com/r/cats/top", headers=Reheaders, params={"limit": "100"}
+)
+result = aj.json()
+for post in result["data"]["children"]:
+    url = post["data"]["url"]
+    name = post["data"]["name"]
+    t = requests.get(url)
+    with open(name, "wb") as file:
+        file.write(t.content)
